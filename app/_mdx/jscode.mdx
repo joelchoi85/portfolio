@@ -1,0 +1,101 @@
+```javascript
+$('#getAttendanceClassList')
+  .off('click')
+  .on('click', function () {
+    var data = {
+      action: 'getAttendanceClassList',
+    };
+    ajaxHandler(
+      '/class/ajax_class',
+      'GET',
+      true,
+      data,
+      function (response) {
+        if (response.result_detail != '') {
+          var html =
+            '<label>출석체크 강의 선택</label>' +
+            '<select class="form-select pb-1" name="attendance_class_seq" ' +
+            ' id="AttendanceClassSeq" >';
+          $.each(response.result_detail, function (i, item) {
+            if (i == 0) {
+              html += '<option value="' + item.seq + '" selected>' + item.name + '</option>';
+            } else {
+              html += '<option value="' + item.seq + '">' + item.name + '</option>';
+            }
+          });
+
+          html +=
+            '</select>' +
+            .
+            .
+            .
+            '<input type="text" class="form-control" name="end_date" ' +
+            'id="AttendanceWeekendEndDate" value="">' +
+            '<i class="nc-icon nc-calendar-60 calendar-right"></i> ' +
+            '</div>' +
+            '<p>*출석체크 기간은 변경하실 수 없습니다</p>';
+        }
+        docRenderPopup(
+          html,
+          true,
+          function () {
+            var class_name = $.trim($('input[name="class_name"]').val());
+            var title = $.trim($('#AttendanceClassSeq option:selected').text());
+            if (class_name == '') {
+              docRenderPopup('강의명을 입력해주세요');
+              return;
+            }
+            var data = {
+              action: 'writeAttendanceWeekendClass',
+              class_name: $.trim($('input[name="class_name"]').val()),
+              attendance_class_seq: $.trim($('#AttendanceClassSeq option:selected').val()),
+              start_date: $.trim($('input[name="start_date"]').val()),
+              end_date: $.trim($('input[name="end_date"]').val()),
+            };
+            ajaxHandler(
+              '/class/ajax_class',
+              'POST',
+              true,
+              data,
+              function (response) {
+                docRenderPopup(
+                  response.result_message + '. 출석체크하시겠습니까?',
+                  true,
+                  function () {
+                    var link =
+                      .
+                      .
+                      .
+
+                    window.open(link);
+                  },
+                  true,
+                  () => window.location.reload(),
+                  undefined,
+                  '등록완료',
+                  undefined,
+                  '출석체크 하러가기',
+                );
+              },
+              function () {
+                docRenderPopup('오류가 발생하였습니다');
+              },
+            );
+          },
+          .
+          .
+          .
+        );
+        $('#Attendance~~')
+          .datepicker({
+            format: 'yyyy-mm-dd',
+          })
+          .datepicker('setDate', new Date());
+      },
+      function () {
+        docRenderPopup('오류가 발생하였습니다');
+      },
+    );
+  });
+
+```

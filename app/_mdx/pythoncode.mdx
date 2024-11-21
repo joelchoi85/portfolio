@@ -1,0 +1,38 @@
+```python
+if event['params']['querystring']['action'] == 'getClassList':
+	try:
+		with db.cursor(pymysql.cursors.DictCursor) as cursor:
+			# 강의 게시글 전체 개수 가져오기
+			sql = "select count(*) as total_count from hm_class where type > 5 and" \
+					" title like %s and status != -1 and NOT (STATUS=0 AND static_type > 0 )"
+			cursor.execute(sql, f'%{search_keyword}%')
+			result = cursor.fetchone()
+
+			if math.ceil(result['total_count'] / page_per_count) == 0:
+				result_set['page_count'] = 1
+			else:
+				result_set['page_count'] = math.ceil(
+						result['total_count'] / page_per_count)
+
+			result_set['total_count'] = result['total_count']
+
+			sql = "SELECT *, b.name AS admin_name FROM hm_class AS a" \
+					" JOIN hm_admin AS b ON a.`admin_seq` = b.`seq` " \
+					" where a.type > 5 and b.status != -1 and a.status != -1" \
+					" and a.title like %s and not (a.status=0 AND a.static_type>0) " \
+					" ORDER BY a.create_date DESC LIMIT %s, %s"
+			cursor.execute(
+					sql, (f'%{search_keyword}%', page_start_num, page_per_count))
+			result_set['class_list'] = cursor.fetchall()
+			.
+			.
+			.
+
+	except Exception as error:
+		.
+		.
+		.
+	finally:
+		cursor.close()
+
+```

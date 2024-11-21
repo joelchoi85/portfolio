@@ -1,0 +1,92 @@
+```php
+<?php
+#/controller/class/class_list
+#MODEL_VIEW
+$curl = curl_init();
+curl_setopt_array($curl, array(
+    CURLOPT_URL => "$api_url/class?action=getClassList",
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_MAXREDIRS => 10,
+    CURLOPT_TIMEOUT => 30,
+    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    CURLOPT_CUSTOMREQUEST => "GET",
+    CURLOPT_HTTPHEADER => array(
+    "Authorization: ".$func->encrypt256AES(),
+    "Cache-Control: no-cache",
+    "Content-Type: application/json",
+    ),
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+if ($err) {
+    $logger->info(array(
+        "status"=>200,
+        "message"=> $err
+    ));
+} else {
+    $responseJson = json_decode($response, true);
+
+    if($responseJson['result_code'] == 200){
+        $data = $responseJson['result_detail'];
+        .
+        .
+        .
+    }
+}
+curl_close();
+?>
+
+<!-- /view/class/class_list -->
+<!-- VIEW -->
+.
+.
+.
+<tbody>
+  <?php
+      foreach($data['class_list'] as $key=>$class) { ?>
+  <tr>
+    <td onclick="window.location.assign('/class/class_detail?seq=<?=$class['seq']?>')">
+      <?=$data['page_start_num']+( $key+1 )?>
+    </td>
+    <td onclick="window.location.assign('/class/class_detail?seq=<?=$class['seq']?>')">
+      <?php
+          if($class['type'] == 1) echo "MOV";
+          elseif($class['type'] == 2) echo "LIVE";
+          elseif($class['type'] == 3) echo "OFFLINE";
+          .
+          .
+          .
+        ?>
+    </td>
+    <td onclick="window.location.assign('/class/class_detail?seq=<?=$class['seq']?>')">
+      <?=$class['title']=='' ?"-":$class['title']?>
+    </td>
+    <td>
+      <?=$class['admin_name']=='' ?"-":$class['admin_name']?>
+    </td>
+    <td class="text-center">
+      <?php if($func->UTCTimetoGMT($class['class_end_date'], 'Y') >= 5000) { ?>
+      <?=$func->UTCTimetoGMT($class['class_start_date'], 'Y-m-d')?> ~
+      <?=$func->UTCTimetoGMT($class['class_start_date'], 'Y')?>-12-31
+      <?php } else { ?>
+      <?=$func->UTCTimetoGMT($class['class_start_date'], 'Y-m-d')?> ~
+      <?=$func->UTCTimetoGMT($class['class_end_date'], 'Y-m-d')?>
+      <?php } ?>
+    </td>
+    <td class="text-center">
+      <?=$func->UTCTimetoGMT($class['create_date'], 'Y-m-d')?>
+    </td>
+    <td class="text-center">
+      <button class="btn btn-danger deleteClassBtn" id="deleteClassBtn"
+        data-id="<?=$class['seq']?>">삭제하기</button>
+    </td>
+  </tr>
+  <?php } ?>
+</tbody>
+.
+.
+.
+
+
+```

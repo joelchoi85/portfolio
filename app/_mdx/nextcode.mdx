@@ -1,0 +1,84 @@
+```tsx
+// /components/course-info.tsx : Client Component
+// ...
+export function CourseInfo({ course }: { course: Course }) {
+	// ...
+	const today = new Date();
+	return (
+		<Card className="select-none rounded-none md:rounded-xl border-none hover:bg-zinc-100 hover:scale-105 transition-all">
+			<CardHeader className="p-0">
+				<Link href={{ pathname: `/course/${course.id}` }}>
+					<div
+						className={cn(
+							'min-w-12 aspect-video',
+							'bg-cover bg-gradient-to-br from-rose-700 to-purple-800 ',
+							'md:shadow-lg md:rounded-t-xl overflow-hidden flex items-center',
+						)}
+					>
+						...
+					</div>
+				</Link>
+			</CardHeader>
+
+			<CardContent className="mt-4">
+				<Link href={`/course/${course.id}`}>
+					<CardTitle>
+						{/* [{course.term}] */}
+						{!course.isReal && (
+							<Badge className="mr-2" variant={'default'}>
+								예정
+							</Badge>
+						)}
+						{course.title}
+					</CardTitle>
+					<CardDescription>
+						<span className="mt-2 flex gap-2 items-center">
+							<FaCalendarCheck />
+							{course.startsOn && new Date(course.startsOn).toLocaleDateString('ko-KR')}~
+						</span>
+					</CardDescription>
+					<CardDescription>
+						<span className="mt-2">{course.subtitle}</span>
+					</CardDescription>
+				</Link>
+			</CardContent>
+		</Card>
+	);
+}
+
+// /actions/course.ts : SERVER ACTION ( react 18 feature )
+`use server`;
+async function getCourseList() {
+	try {
+		const courses = await db.course.findMany({});
+		return courses;
+	} catch (error) {
+		console.log(error);
+		return [];
+	}
+}
+
+// /(course)/course/page.tsx : Server Component
+interface CourseListProps {
+	courses: PromiseReturnType<typeof getCourseList>;
+}
+
+function CourseList({ courses }: CourseListProps) {
+	return (
+		<div className="flex flex-wrap gap-8">
+			{courses.map(course => (
+				<CourseInfo course={course} />
+			))}
+		</div>
+	);
+}
+
+export default async function NextJSFetch() {
+	const courses = await getCourseList();
+	if (courses.length === 0) {
+		return <div>강좌가 없습니다</div>;
+	} else {
+		return <CourseList courses={courses} />;
+	}
+}
+```
