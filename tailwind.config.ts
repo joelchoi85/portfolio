@@ -1,5 +1,7 @@
 import type { Config } from 'tailwindcss';
-
+import { PluginAPI } from 'tailwindcss/types/config';
+import tailwindcssAnimate from 'tailwindcss-animate';
+import typography from '@tailwindcss/typography';
 export default {
 	darkMode: ['class'],
 	content: [
@@ -8,6 +10,13 @@ export default {
 		'./app/**/*.{js,ts,jsx,tsx,mdx}',
 	],
 	theme: {
+		listStyleType: {
+			none: 'none',
+			disc: 'disc',
+			decimal: 'decimal',
+			square: 'square',
+			roman: 'upper-roman',
+		},
 		extend: {
 			animation: {
 				glow: 'glowing 2s infinite',
@@ -24,7 +33,7 @@ export default {
 					},
 				},
 			},
-			typography: ({ theme }: any) => ({
+			typography: ({ theme }: PluginAPI) => ({
 				pink: {
 					css: {
 						'--tw-prose-body': theme('colors.pink[800]'),
@@ -122,5 +131,5 @@ export default {
 			},
 		},
 	},
-	plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
+	plugins: [tailwindcssAnimate, typography],
 } satisfies Config;

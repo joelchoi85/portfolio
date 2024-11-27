@@ -18,7 +18,7 @@ const Noto = Noto_Sans_KR();
 
 export const metadata: Metadata = {
 	title: 'Welcome to Joelland',
-	description: 'Nextjs',
+	description: 'Next.js',
 };
 
 export default function RootLayout({

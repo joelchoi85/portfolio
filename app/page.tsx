@@ -3,7 +3,8 @@
 import CSROnly from '@/components/csr-only';
 import Greeting from '@/components/greeting';
 import Light from '@/components/light';
-import Portfolio from '@/components/Portfolio';
+import Portfolio from '@/components/portfolio';
+import Projects from '@/components/projects';
 import Link from 'next/link';
 
 export default function Home() {
@@ -52,6 +53,9 @@ export default function Home() {
 				</section>
 				<section>
 					<Portfolio />
+				</section>
+				<section>
+					<Projects />
 				</section>
 			</main>
 
